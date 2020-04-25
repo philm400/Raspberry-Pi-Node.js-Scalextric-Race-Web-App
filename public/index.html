@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    </head>
+    <body>
+        <h1>Scalextric.JS</h1>
+        <div id="timer_lane_1" class="timer"></div>
+        <nav class="controls">
+			<a href="#" class="button" onClick="stopwatch.start();">Start</a>
+			<a href="#" class="button" onClick="stopwatch.lap();">Lap</a>
+			<a href="#" class="button" onClick="stopwatch.stop();">Stop</a>
+			<a href="#" class="button" onClick="stopwatch.restart();">Restart</a>
+			<a href="#" class="button" onClick="stopwatch.clear();">Clear Laps</a>
+		</nav>
+        <ul id="console_lane_1"></ul>
+
+        <!-- our main JS - TImer Class and interrupt handlers-->
+        <script src="/js/main.js"></script>
+        <!-- include socket.io client side script -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+
+    </body>
+</html>
+</html>
