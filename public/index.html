@@ -1,20 +1,50 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/css/styles.css">
     </head>
     <body>
-        <h1>Scalextric.JS</h1>
-        <div id="timer_lane_1" class="timer"></div>
-        <nav class="controls">
-			<a href="#" class="button" onClick="stopwatch.start();">Start</a>
-			<a href="#" class="button" onClick="stopwatch.lap();">Lap</a>
-			<a href="#" class="button" onClick="stopwatch.stop();">Stop</a>
-			<a href="#" class="button" onClick="stopwatch.restart();">Restart</a>
-			<a href="#" class="button" onClick="stopwatch.clear();">Clear Laps</a>
-		</nav>
-        <ul id="console_lane_1"></ul>
-
+        <div id="ui-wrap">
+            <div class="row flex-grid" id="ui-top">
+                <div class="col full">
+                    <h1>Scalextric.JS</h1>
+                </div>
+            </div>
+            <div class="row flex-grid" id="ui-elem">
+                <div class="col two-fifths lane">
+                    <h2>LANE 1</h2>
+                    <div class="lapsHeader bkg-blur">
+                        <span>Lap #</span>
+                        <span>Lap Time</span>
+                        <span>Race Time</span>
+                        <span>Status</span>
+                    </div>
+                    <ul id="console_lane_1" class="laps bkg-blur"></ul>
+                </div>
+                <div class="col one-fifth">
+                    <div id="timer_lane_1" class="timer"></div>
+                    <nav class="controls">
+                        <a href="#" class="btn green" onClick="stopwatch.start();"><span>Start</span></a>
+                        <a href="#" class="btn red" onClick="stopwatch.stop();"><span>Stop</span></a>
+                        <a href="#" class="btn yellow" onClick="stopwatch.lap();"><span>Lap</span></a>
+                        <a href="#" class="btn grey" onClick="stopwatch.reset();"><span>Reset</span></a>
+                        <a href="#" class="btn grey" onClick="stopwatch.clear();"><span>Clear Laps</span></a>
+                    </nav>
+                </div>
+                <div class="col two-fifths lane">
+                    <h2>LANE 2</h2>
+                    <ul id="console_lane_2" class="lane bkg-blur">
+                        <li class="heading">
+                            <span>Lap #</span>
+                            <span>Lap Time</span>
+                            <span>Race Time</span>
+                            <span>Status</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>        
         <!-- our main JS - TImer Class and interrupt handlers-->
         <script src="/js/main.js"></script>
         <!-- include socket.io client side script -->
