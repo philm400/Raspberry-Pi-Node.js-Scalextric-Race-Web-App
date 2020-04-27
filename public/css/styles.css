@@ -19,7 +19,8 @@ body {
 	color:#fff;
 }
 .timer {
-    font-family: Menlo, Monaco, 'Courier New', monospace;
+    font-family: "Teko", Helvetica, Arial, sans-serif;
+    font-weight: 300;
     font-size: 2rem;
 }
 .row {
@@ -51,7 +52,6 @@ body {
 }
 .flex-grid .col {
 	display: flex;
-	flex-wrap: wrap;
     flex-direction: column;
 }
 .full { width: 100%; }
@@ -131,18 +131,23 @@ body {
 }
 
 .lane {
-    flex-wrap: no-wrap;
     max-height: 100%;
+}
+.lane .wrap {
+    max-height:100%;
 }
 .lapsHeader {
     display: flex;
     margin: 0;
-    padding: 10px 1.125rem 0;
+    padding: 20px 1.125rem 2px;
     font-size: 1.25rem;
     font-weight: 500;
+    height: 59px;
 }
 .laps {
-    overflow-y: scroll;
+    overflow-y: auto;
+    height: auto;
+    max-height: calc(100% - 59px);
 }
 .laps li {
     display: flex;
@@ -151,7 +156,58 @@ body {
     background: rgba(0,0,0,0.2);
     font-size: 1.75rem;
     font-weight: 300;
+    position: relative;
 }
-.laps li span {
+.lapsHeader > span,
+.laps li > span {
     flex: 1;
+}
+.lapsHeader > span:nth-child(1) {
+    padding-left: 0.5rem;
+    max-width: 90px;
+}
+.lapsHeader > span:nth-child(1) {
+    padding-left: 0.5rem;
+}
+.laps li > span:nth-child(1) {
+    padding-left: 1.5rem;
+    max-width: 90px;
+}
+span.fastestLap {
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+.laps li.fastest::after {
+    position: absolute;
+    content: " ";
+    width:20px;
+    height: 100%;
+    background: #be2edd;
+    top:0;
+    left:0;
+}
+.laps li.fastest .fastestLap {
+    background: #be2edd;
+    visibility: visible;
+}
+.central {
+    padding: 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.timer {
+    width: 100%;
+    margin: 2rem 0 10rem;
+}
+
+.controls {
+    width: 100%;
+    align-self: flex-end;
 }
