@@ -14,7 +14,6 @@ body {
     background-size: cover;
 	font-family: "Teko", Helvetica, Arial, sans-serif;
 	margin:0;
-	padding:0 7vw;
     padding: 0 calc(32px + (130 - 32) * ((100vw - 800px) / (1920 - 800)));
     min-height: 100vh;
 	color:#fff;
@@ -27,6 +26,7 @@ body {
     width: 100vw;
     height: 100vh;
     z-index: 1;
+    transition: opacity 2s ease-out;
 }
 .timer {
     font-family: "Teko", Helvetica, Arial, sans-serif;
@@ -84,6 +84,60 @@ body {
 .half { width: 50%; }
 .two-fifths { width: 40%; }
 .one-fifth { width: 20%; }
+
+.aln-cent {
+    text-align: center;
+}
+.flex {
+    display: flex !important;
+}
+.hidden {
+    visibility: hidden;
+}
+.op-25 {
+    opacity: 25%;
+}
+
+#logo {
+    z-index: 3;
+    position: absolute;
+    top:25%;
+    left:0;
+    right:0;
+    margin: 0 auto;
+    width: 300px;
+    height: auto;
+    filter: drop-shadow(0 5px 20px rgba(0,0,0,0.7));
+    opacity: 0;
+    transform-origin: 50% 50%;
+    animation-delay: 1.0s;
+    animation-name: UI-reveal-logo;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+}
+#logo.in-game {
+    transition: all 0.5s ease-out;
+    width: 250px;
+    top: 60px;
+}
+#enter-game-btn {
+    z-index: 3;
+    position: absolute;
+    top:45%;
+    left:0;
+    right:0;
+    margin: 0 auto;
+    max-width: 350px;
+    font-size: 3rem;
+    opacity: 0;
+    visibility: hidden;
+}
+#enter-game-btn.on {
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.15s ease-out, opacity 1s ease-out;
+}
 
 #ui-wrap {
     position: relative;
@@ -168,6 +222,7 @@ body {
 }
 .lane .wrap {
     max-height:100%;
+    border-radius: 5px;
 }
 .lapsHeader {
     display: flex;
@@ -247,23 +302,25 @@ span.fastestLap {
 }
 
 #newGame {
+    display: none;
     position: absolute;
     top:0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 3;
-    display: flex;
+    z-index: 4;
     justify-content: center;
 }
 
 .name-game-panel {
+    border-radius: 5px;
     width: 50vw;
     max-width: 35vw;
     align-self: center;
     padding: 1.5rem 3rem;
     background: rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(15px);
+    visibility: hidden;
 }
 .name-game-panel  h1 {
     text-align: center;
@@ -320,31 +377,34 @@ span.fastestLap {
     padding: 8px 30px 8px 38px;
     width: auto;
 }
+.name-game-panel .btn.grey:hover {
+    padding: 8px 30px 8px 48px;
+}
 
 .animate {
     display: block;
 }
 .opacityUI-clear {
     animation-name: opacityUI-clear;
-    animation-duration: 0.5s;
+    animation-duration: 0.25s;
     animation-fill-mode: forwards;
     animation-timing-function: ease-out;
 }
 .reverse-opacityUI-clear {
     animation-name: reverse-opacityUI-clear;
-    animation-duration: 0.5s;
+    animation-duration: 0.25s;
     animation-fill-mode: forwards;
     animation-timing-function: ease-out;
 }
 .blurUI-20 {
     animation-name: blurUI-20;
-    animation-duration: 0.5s;
+    animation-duration: 0.25s;
     animation-fill-mode: forwards;
     animation-timing-function: ease-out;
 }
 .reverse-blurUI-20 {
     animation-name: reverse-blurUI-20;
-    animation-duration: 0.5s;
+    animation-duration: 0.25s;
     animation-fill-mode: forwards;
     animation-timing-function: ease-out;
 }
@@ -353,6 +413,7 @@ span.fastestLap {
     animation-duration: 0.25s;
     animation-fill-mode: forwards;
     animation-timing-function: ease-out;
+    visibility: visible;
 }
 .UIExit {
     animation-name: UI-exit;
@@ -366,7 +427,6 @@ span.fastestLap {
       opacity: 1;
     }
     100% {
-      filter: blur(10px);
       opacity: 0;
     }
 }
@@ -402,7 +462,7 @@ span.fastestLap {
     0% {
         filter: blur(20px);
         opacity: 0px;
-        transform: scale(1.5);
+        transform: scale(1.2);
     }
     100% {
         filter: blur(0px);
@@ -419,6 +479,21 @@ span.fastestLap {
     100% {
         filter: blur(20px);
         opacity: 0px;
-        transform: scale(1.5);
+        transform: scale(1.2);
+        visibility: hidden;
+    }
+}
+@keyframes UI-reveal-logo {
+    0% {
+        filter: blur(20px);
+        opacity: 0px;
+        transform: scale(1.2);
+        filter: drop-shadow(0 5px 20px rgba(0,0,0,0.7));
+    }
+    100% {
+        filter: blur(0px);
+        opacity: 1;
+        transform: scale(1);
+        filter: drop-shadow(0 5px 20px rgba(0,0,0,0.7));
     }
 }

@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;600&display=swap" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/css/styles.css">
     </head>
     <body>
-        <div id="bkg" class="blurUI-20"></div>
-        <div id="ui-wrap" class="opacityUI-clear">
+        <div id="bkg" class="op-25"></div>
+        <img src="/images/scx-logo.svg" id="logo" alt="Logo">
+        <a href="#" class="btn green" id="enter-game-btn" onClick="enterGame();"><span>Start Game ></span></a>
+        <div id="ui-wrap" class="hidden">
             <div class="row flex-grid" id="ui-top">
                 <div class="col full">
                     <h1>Scalextric.JS</h1>
@@ -28,7 +31,7 @@
                 <div class="one-fifth central">
                     <div id="timer_lane_1" class="timer"></div>
                     <nav class="controls">
-                        <a href="#" class="btn blue" onClick="newGame();"><span>Race Options</span></a>
+                        <a href="#" class="btn blue" onClick="raceOptions();"><span>Race Options</span></a>
                         <a href="#" class="btn green" onClick="stopwatch.start();"><span>Start</span></a>
                         <a href="#" class="btn red" onClick="stopwatch.stop();"><span>Stop</span></a>
                         <a href="#" class="btn yellow" onClick="stopwatch.lap();"><span>Lap</span></a>
@@ -50,12 +53,12 @@
             </div>
         </div>
         <div id="newGame">
-            <div class="name-game-panel UIReveal">
+            <div class="name-game-panel">
                 <h1>Race Options</h1>
                 <div class="new-game-options">
                     <div class="form-row">
                         <label for="i-num-laps"># of Laps</label>
-                        <input name="i-num-laps" id="i-num-laps" type="number" value=10> <a href="#" class="step neg">-</a> <a href="#" class="step plus" >+</a>
+                        <input name="i-num-laps" id="i-num-laps" type="number" value=10> <a href="#" class="step neg" onClick="minLap();">-</a> <a href="#" class="step plus" onClick="addLap();">+</a>
                     </div>
                     <div class="form-row">
                         <label for >Player 1 Name</label>
@@ -65,10 +68,10 @@
                         <label for >Player 2 Name</label>
                         <input name="i-player2" id="i-player2" type="text">
                     </div>
-                    <div class="form-row">
+                    <div class="form-row aln-cent">
                         <a href="#" class="btn green" onClick="saveOptions();"><span>Save &amp; Continue</span></a>
                     </div>
-                    <div class="form-row">
+                    <div class="form-row aln-cent">
                         <a href="#" class="btn grey" onClick="closeOptions();"><span>Close</span></a>
                     </div>
                 </div>

@@ -1,4 +1,19 @@
 var parser = new DOMParser();
+var options = {
+    laps: 10,
+    player1: '',
+    player2: ''
+};
+
+const bkg = document.querySelector('#bkg');
+const ui = document.querySelector('#ui-wrap');
+const newg = document.querySelector('#newGame');
+const newgpanel = document.querySelector('.name-game-panel');
+const lapOption = document.querySelector('#i-num-laps');
+const p1 = document.querySelector('#i-player1');
+const p2 = document.querySelector('#i-player2');
+const logo = document.querySelector('#logo');
+const startBtn = document.querySelector('#enter-game-btn');
 
 window.addEventListener('load', function() {
     console.log('Page Loaded')
@@ -9,6 +24,12 @@ window.addEventListener('load', function() {
     }); */
     //var htmlstring = parser.parseFromString('<div #id="TEST"><a href="#">TEST LINK <span>&gt;&gt;</span></a></div>', 'text/html');
     //document.querySelector('#ui-top .col').append(htmlstring.body.firstChild);
+
+    logo.addEventListener('animationend', showStart);
+    function showStart() {
+        startBtn.classList.add('on');
+        logo.removeEventListener('animationend', showStart);
+    }
 });
 
 // Stopwatch Class - Derived from  https://codepen.io/_Billy_Brown/pen/dbJeh
@@ -51,7 +72,7 @@ class Stopwatch {
         this.splitsL1.push({raceTime: this.runtime, lapSplit: diff, animTotal: this.time}); // .push() new lap time and split diff times as an array
         let times = this.times;
         let li = parser.parseFromString(lapElement(), 'text/html');
-        this.results.appendChild(li.body.firstChild);
+        this.results.prepend(li.body.firstChild);
     }    
     stop() {
         this.running = false;
@@ -94,7 +115,7 @@ class Stopwatch {
         return `\
 <span class="min">${pad0(times[0], 2)}</span>:\
 <span class="sec">${pad0(times[1], 2)}</span>:\
-<span class="mil">${pad0(Math.floor(times[2]), 3)}</span>`;
+<span class="mil">${pad0(Math.round(times[2]), 2)}</span>`;
     }
 }
 
@@ -110,3 +131,68 @@ function clearChildren(node) {
 let stopwatch = new Stopwatch(
     document.querySelector('#timer_lane_1'),
     document.querySelector('#console_lane_1'));
+
+function raceOptions() { // handle button event to show New Game panel
+    bkg.classList.add('blurUI-20');
+    ui.classList.add('opacityUI-clear');
+    bkg.addEventListener('animationend', handleAnimationEnd);
+
+    function handleAnimationEnd() {
+        newg.classList.add('flex');
+        newgpanel.classList.add('UIReveal');
+        bkg.removeEventListener('animationend', handleAnimationEnd);
+    }
+}
+function closeOptions() { // handle button event to show New Game panel
+    newgpanel.classList.add('UIExit');
+    newgpanel.addEventListener('animationend', handleAnimationEnd);
+    function handleAnimationEnd() {
+        newg.classList.remove('flex');
+        newgpanel.classList.remove('UIExit','UIReveal');
+        bkg.classList.add('reverse-blurUI-20');
+        bkg.classList.remove('blurUI-20');
+        ui.classList.add('reverse-opacityUI-clear');
+        ui.classList.remove('opacityUI-clear');
+
+        ui.addEventListener('animationend', handleAnimationEnd2);
+        function handleAnimationEnd2() {
+            bkg.classList.remove('reverse-blurUI-20');
+            ui.classList.remove('reverse-opacityUI-clear');
+            ui.removeEventListener('animationend', handleAnimationEnd2);
+        }
+
+        newgpanel.removeEventListener('animationend', handleAnimationEnd);
+    }
+}
+
+function addLap() {
+    var laps = parseInt(lapOption.value) + 1;
+    lapOption.value = laps;
+}
+function minLap() {
+    var laps = parseInt(lapOption.value) - 1;
+    var newLaps = (laps < 0) ?  0 : laps;
+    lapOption.value = newLaps;
+}
+function saveOptions() {
+    options.laps = lapOption.value;
+    options.player1 = p1.value;
+    options.player2 = p2.value;
+    console.table(options);
+    closeOptions();
+}
+function enterGame() {
+    startBtn.classList.remove('on');
+
+    setTimeout(() => {
+        bkg.classList.remove('op-25');
+        logo.classList.add('in-game');
+        ui.classList.remove('hidden');
+        ui.classList.add('reverse-opacityUI-clear');
+        ui.addEventListener('animationend', handleAnimationEnd2);
+        function handleAnimationEnd2() {
+            ui.classList.remove('reverse-opacityUI-clear');
+            ui.removeEventListener('animationend', handleAnimationEnd2);
+        }
+    }, 500);
+}
