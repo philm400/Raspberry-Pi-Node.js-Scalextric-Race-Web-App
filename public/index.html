@@ -5,7 +5,8 @@
         <link rel="stylesheet" type="text/css" href="/css/styles.css">
     </head>
     <body>
-        <div id="ui-wrap">
+        <div id="bkg" class="blurUI-20"></div>
+        <div id="ui-wrap" class="opacityUI-clear">
             <div class="row flex-grid" id="ui-top">
                 <div class="col full">
                     <h1>Scalextric.JS</h1>
@@ -27,11 +28,11 @@
                 <div class="one-fifth central">
                     <div id="timer_lane_1" class="timer"></div>
                     <nav class="controls">
+                        <a href="#" class="btn blue" onClick="newGame();"><span>Race Options</span></a>
                         <a href="#" class="btn green" onClick="stopwatch.start();"><span>Start</span></a>
                         <a href="#" class="btn red" onClick="stopwatch.stop();"><span>Stop</span></a>
                         <a href="#" class="btn yellow" onClick="stopwatch.lap();"><span>Lap</span></a>
                         <a href="#" class="btn grey" onClick="stopwatch.reset();"><span>Reset</span></a>
-                        <a href="#" class="btn grey" onClick="stopwatch.clear();"><span>Clear Laps</span></a>
                     </nav>
                 </div>
                 <div class="col two-fifths lane">
@@ -47,7 +48,32 @@
                     </div>
                 </div>
             </div>
-        </div>        
+        </div>
+        <div id="newGame">
+            <div class="name-game-panel UIReveal">
+                <h1>Race Options</h1>
+                <div class="new-game-options">
+                    <div class="form-row">
+                        <label for="i-num-laps"># of Laps</label>
+                        <input name="i-num-laps" id="i-num-laps" type="number" value=10> <a href="#" class="step neg">-</a> <a href="#" class="step plus" >+</a>
+                    </div>
+                    <div class="form-row">
+                        <label for >Player 1 Name</label>
+                        <input name="i-player1" id="i-player1" type="text">
+                    </div>
+                    <div class="form-row">
+                        <label for >Player 2 Name</label>
+                        <input name="i-player2" id="i-player2" type="text">
+                    </div>
+                    <div class="form-row">
+                        <a href="#" class="btn green" onClick="saveOptions();"><span>Save &amp; Continue</span></a>
+                    </div>
+                    <div class="form-row">
+                        <a href="#" class="btn grey" onClick="closeOptions();"><span>Close</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- our main JS - TImer Class and interrupt handlers-->
         <script src="/js/main.js"></script>
         <!-- include socket.io client side script -->

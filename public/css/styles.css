@@ -10,18 +10,44 @@ ul {
     list-style: none;
 }
 body {
-    background: #111 url('/images/base-img.webp') no-repeat center center;
+    background: #111;
     background-size: cover;
 	font-family: "Teko", Helvetica, Arial, sans-serif;
 	margin:0;
 	padding:0 7vw;
+    padding: 0 calc(32px + (130 - 32) * ((100vw - 800px) / (1920 - 800)));
     min-height: 100vh;
 	color:#fff;
+}
+#bkg {
+    background: url('/images/base-img.webp') no-repeat center center;
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
 }
 .timer {
     font-family: "Teko", Helvetica, Arial, sans-serif;
     font-weight: 300;
-    font-size: 2rem;
+    /* font-size: 4.583vw; */
+    font-size: calc(24px + (88 - 24) * ((100vw - 800px) / (1920 - 800)));
+    text-align: center;
+}
+.timer .min,
+.timer .sec {
+    width: 3.854vw;
+    padding: 0 0.26vw;
+    padding: 0 calc(0px + (5 - 0) * ((100vw - 800px) / (1920 - 800)));
+    display: inline-block;
+}
+.timer .mil {
+    width: 5.52vw;
+    padding: 0 0.26vw;
+    padding: calc(0px + (5 - 0) * ((100vw - 800px) / (1920 - 800)));
+    display: inline-block;
+    text-align: left;
 }
 .row {
 	margin: 0;
@@ -59,6 +85,10 @@ body {
 .two-fifths { width: 40%; }
 .one-fifth { width: 20%; }
 
+#ui-wrap {
+    position: relative;
+    z-index: 2;
+}
 #ui-wrap .row {
     flex: 1;
 }
@@ -116,6 +146,9 @@ body {
 }
 .btn:hover::before {
     width: 30px;
+}
+.btn.blue::before {
+    background: #22a6b3;
 }
 .btn.green::before {
     background: #009432;
@@ -200,14 +233,192 @@ span.fastestLap {
     flex: 1;
     flex-direction: row;
     flex-wrap: wrap;
+    max-height: 100%;
 }
 
 .timer {
     width: 100%;
-    margin: 2rem 0 10rem;
+    margin: 2rem 0 0;
 }
 
 .controls {
     width: 100%;
     align-self: flex-end;
+}
+
+#newGame {
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+}
+
+.name-game-panel {
+    width: 50vw;
+    max-width: 35vw;
+    align-self: center;
+    padding: 1.5rem 3rem;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(15px);
+}
+.name-game-panel  h1 {
+    text-align: center;
+    font-size: 3rem;
+}
+.name-game-panel  .form-row {
+    margin: 0 0 1rem;
+}
+.name-game-panel label {
+    display: block;
+    font-size: 1.5rem;
+}
+.name-game-panel input {
+    text-align: left;
+    font-size: 2rem;
+    -webkit-appearance: none;
+    background: rgba(0,0,0,0.3);   
+    padding: 7px 1rem 5px;
+    font-weight: 300;
+    margin: 0 0.5rem 0 0;
+    border: none;
+    font-family: "Teko", Helvetica, Arial, sans-serif;
+    color: #fff;
+    display: inline-block;
+    width: 100%;
+}
+.name-game-panel input:focus {
+    background: rgba(0,0,0,0.5);
+    outline: none;
+}
+.name-game-panel input::-webkit-outer-spin-button,
+.name-game-panel input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.name-game-panel input[type="number"] {
+    max-width: 5rem;
+}
+.name-game-panel .step {
+    text-decoration: none;
+    text-align: center;
+    font-size: 2rem;
+    background: rgba(0,0,0,0.3);   
+    padding: 7px 1rem 5px;
+    font-weight: 300;
+    margin: 0;
+    color: #fff;
+}
+.name-game-panel .step:hover {
+    background: rgba(0,0,0,0.5);
+}
+.name-game-panel .btn.grey {
+    display: inline-block;
+    padding: 8px 30px 8px 38px;
+    width: auto;
+}
+
+.animate {
+    display: block;
+}
+.opacityUI-clear {
+    animation-name: opacityUI-clear;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+}
+.reverse-opacityUI-clear {
+    animation-name: reverse-opacityUI-clear;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+}
+.blurUI-20 {
+    animation-name: blurUI-20;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+}
+.reverse-blurUI-20 {
+    animation-name: reverse-blurUI-20;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+}
+.UIReveal {
+    animation-name: UI-reveal;
+    animation-duration: 0.25s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+}
+.UIExit {
+    animation-name: UI-exit;
+    animation-duration: 0.25s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+}
+
+@keyframes opacityUI-clear {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      filter: blur(10px);
+      opacity: 0;
+    }
+}
+@keyframes reverse-opacityUI-clear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes blurUI-20 {
+    0% {
+        filter: blur(0px);
+        opacity: 1;
+    }
+    100% {
+        filter: blur(20px);
+        opacity: 0.75;
+    }
+}
+@keyframes reverse-blurUI-20 {
+    0% {
+        filter: blur(20px);
+        opacity: 0.75;
+    }
+    100% {
+        filter: blur(0px);
+        opacity: 1;
+    }
+}
+@keyframes UI-reveal {
+    0% {
+        filter: blur(20px);
+        opacity: 0px;
+        transform: scale(1.5);
+    }
+    100% {
+        filter: blur(0px);
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes UI-exit {
+    0% {
+        filter: blur(0px);
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        filter: blur(20px);
+        opacity: 0px;
+        transform: scale(1.5);
+    }
 }

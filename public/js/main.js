@@ -24,6 +24,7 @@ class Stopwatch {
         this.stop();
         this.times = [ 0, 0, 0 ];
         this.outputClock(this.times);
+        this.clear();
     }    
     start() {
         this.runtime = 0;
