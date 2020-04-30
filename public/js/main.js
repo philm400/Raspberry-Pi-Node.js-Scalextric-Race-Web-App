@@ -91,18 +91,8 @@ class Stopwatch {
     calculateClock(timestamp, ) {
         var diff = timestamp - this.time;
         this.runtime += diff;
-        // Hundredths of a second are 100 ms
-        this.times[2] += diff;
-        // Seconds are 100 hundredths of a second
-        if (this.times[2] >= 1000) {
-            this.times[1] += 1;
-            this.times[2] -= 1000;
-        }
-        // Minutes are 60 seconds
-        if (this.times[1] >= 60) {
-            this.times[0] += 1;
-            this.times[1] -= 60;
-        }
+        var timeObj = new Date(this.runtime).toISOString().slice(14, -1);
+        this.times = timeObj.split(/[:.]+/);
     }  
     calculateTime(timestamp, type = 0) {
         var cut = (type == 'lap') ?  17 : 14;
