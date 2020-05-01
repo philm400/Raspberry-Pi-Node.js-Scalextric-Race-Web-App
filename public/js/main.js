@@ -22,9 +22,8 @@ window.addEventListener('load', function() {
         //document.querySelecter("#console_lane_1").innerHTML += 'Lane1 - Data: '+data+'<br>';
         console.log('Lane1 - Data: '+data);
     }); */
-    //var htmlstring = parser.parseFromString('<div #id="TEST"><a href="#">TEST LINK <span>&gt;&gt;</span></a></div>', 'text/html');
-    //document.querySelector('#ui-top .col').append(htmlstring.body.firstChild);
-
+    updateTimer(new Date(0).toISOString().slice(14, 21));
+     
     logo.addEventListener('animationend', showStart);
     function showStart() {
         startBtn.classList.add('on');
@@ -32,95 +31,58 @@ window.addEventListener('load', function() {
     }
 });
 
-// Stopwatch Class - Derived from  https://codepen.io/_Billy_Brown/pen/dbJeh
-class Stopwatch {
-    constructor(display, results) {
-        this.running = false;
-        this.display = display;
-        this.results = results;
-        this.time = 0;
-        this.reset();
-    }    
-    reset() {
-        this.stop();
-        this.times = [ 0, 0, 0 ];
-        this.outputClock(this.times);
-        this.clear();
-    }    
-    start() {
-        this.runtime = 0;
-        this.time = performance.now();
-        this.splitsL1 = [{raceTime: this.runtime, lapSplit: 0, animTotal: this.time}]; // time,split,TimeSinceAnimPain
-        this.splitsL2 = [{raceTime: this.runtime, lapSplit: 0, animTotal: this.time}];
-        if (!this.running) {
-            this.running = true;
-            requestAnimationFrame(this.step.bind(this));
-        }
-    }    
-    lap(lane) {
+const timerEl = document.querySelector("#timer_lane_1");
+const lapsLane1 = document.querySelector("#console_lane_1");
+const lapsLane2 = document.querySelector("#console_lane_2");
+var parser = new DOMParser();
+var worker = new Worker('/js/timer-worker.js'); // Threaded JS Worker
+
+worker.onmessage = function(e) {
+    if(e.data.function == 'timer') {
+        updateTimer(new Date(e.data.value).toISOString().slice(14, 21));
+    }
+    if(e.data.function == 'lap') { // data.function, data.value, data.raceTime, data.lane, data.num
+        console.table(e.data);
         var lapElement = () => `<li class="lap">
-                                    <span class="lapNum">${lapNum}</span>
-                                    <span class="lapTime">${fdiff}</span>
-                                    <span class="raceTime">${fruntime}</span>
+                                    <span class="lapNum">${e.data.num}</span>
+                                    <span class="lapTime">${diff}</span>
+                                    <span class="raceTime">${runtime}</span>
                                     <span class="fastestLap">Fastest Lap</span>
                                 </li>`;
-        var lapNum = this.splitsL1.length;
-        var prevTime = this.splitsL1[this.splitsL1.length - 1].animTotal;
-        var diff = this.time - prevTime;
-        var fdiff = this.calculateTime(diff,'lap'); // formatted for output
-        var fruntime = this.calculateTime(this.runtime);// formatted for output
-        this.splitsL1.push({raceTime: this.runtime, lapSplit: diff, animTotal: this.time}); // .push() new lap time and split diff times as an array
-        let times = this.times;
+        diff = new Date(e.data.value).toISOString().slice(17, -1);   
+        runtime = new Date(e.data.raceTime).toISOString().slice(14, -1);            
         let li = parser.parseFromString(lapElement(), 'text/html');
-        this.results.prepend(li.body.firstChild);
-    }    
-    stop() {
-        this.running = false;
-        this.time = null;
-    }   
-    clear() {
-        clearChildren(this.results);
-    }    
-    step(timestamp) {
-        if (!this.running) return;
-        this.calculateClock(timestamp);
-        this.time = timestamp;
-        this.outputClock();
-        requestAnimationFrame(this.step.bind(this));
-    }    
-    calculateClock(timestamp, ) {
-        var diff = timestamp - this.time;
-        this.runtime += diff;
-        var timeObj = new Date(this.runtime).toISOString().slice(14, -1);
-        this.times = timeObj.split(/[:.]+/);
-    }  
-    calculateTime(timestamp, type = 0) {
-        var cut = (type == 'lap') ?  17 : 14;
-        return new Date(timestamp).toISOString().slice(cut, -1);
-    }  
-    outputClock() {
-        this.display.innerHTML = this.formatClock(this.times);
-    }    
-    formatClock(times) {
-        return `\
-<span class="min">${pad0(times[0], 2)}</span>:\
-<span class="sec">${pad0(times[1], 2)}</span>:\
-<span class="mil">${pad0(Math.round(times[2]), 2)}</span>`;
+        if (e.data.lane == 1) {
+            lapsLane1.prepend(li.body.firstChild); 
+
+        } else if (e.data.lane == 2) {
+            lapsLane2.prepend(li.body.firstChild); 
+        }                 
     }
 }
-
-function pad0(value, count) { // Add leading 0's when required
-    count = count || 2;
-    return ('00' + value).slice(-count);
+function updateTimer(time) {
+    timerEl.innerHTML = time;
 }
-function clearChildren(node) {
-    while (node.lastChild)
-        node.removeChild(node.lastChild);
+function startRace() {
+    worker.postMessage({function: 'start'}); // Start the timer in worker.
+}
+function stopRace() {
+    worker.postMessage({function: 'stop'}); // Stop the timer in worker.
+}
+function resetRace() {
+    worker.postMessage({function: 'reset'}); // reset the timer in worker.
+    updateTimer(new Date(0).toISOString().slice(14, 21));
+    lapsLane1.innerHTML = '';
+    lapsLane2.innerHTML = '';
+    worker.postMessage({function: 'reset'}); // reset the race.
+}
+function lapTime(l) {
+    worker.postMessage({function: 'lap', lane: l}); // Stop the timer in worker.
 }
 
-let stopwatch = new Stopwatch(
-    document.querySelector('#timer_lane_1'),
-    document.querySelector('#console_lane_1'));
+
+
+/* Functions below are UI interaction related  */
 
 function raceOptions() { // handle button event to show New Game panel
     bkg.classList.add('blurUI-20');

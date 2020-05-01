@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Web Worker threaded timer function</title>
+</head>
+<body>
+
+    <button onClick="startRace();">START</button>
+    <button onClick="stopRace();">STOP</button>
+    <button onClick="resetRace();">RESET</button>
+    <button onClick="lapTime(1);">LAP - Lane 1</button>
+
+  <div id="Timer"></div>
+  <ul id="Laps"></ul>
+
+  <script>
+    const timerEl = document.querySelector("#Timer");
+    const lapsEl = document.querySelector("#Laps");
+    var parser = new DOMParser();
+    var worker = new Worker('/js/timer-worker.js');
+
+    worker.onmessage = function(e) {
+        if(e.data.function == 'timer') {
+            updateTimer(new Date(e.data.value).toISOString().slice(14, 21));
+        }
+        if(e.data.function == 'lap') { // data.function, data.value, data.raceTime, data.lane, data.num
+            console.table(e.data);
+            var lapElement = () => `<li class="lap">
+                                        <span class="lapNum">${e.data.num}</span> - 
+                                        <span class="lapTime">${diff}</span> - 
+                                        <span class="raceTime">${runtime}</span> - 
+                                        <span class="fastestLap">Fastest Lap</span>
+                                    </li>`;
+            diff = new Date(e.data.value).toISOString().slice(17, -1);   
+            runtime = new Date(e.data.raceTime).toISOString().slice(14, -1);            
+            let li = parser.parseFromString(lapElement(), 'text/html');
+            lapsEl.prepend(li.body.firstChild);                  
+        }
+    }
+
+    function startRace() {
+        worker.postMessage({function: 'start'}); // Start the timer in worker.
+    }
+    function stopRace() {
+        worker.postMessage({function: 'stop'}); // Stop the timer in worker.
+    }
+    function resetRace() {
+        worker.postMessage({function: 'reset'}); // reset the timer in worker.
+        updateTimer(new Date(0).toISOString().slice(14, 21));
+        lapsEl.innerHTML = '';
+        worker.postMessage({function: 'reset'}); // reset the race.
+    }
+    function lapTime(l) {
+        worker.postMessage({function: 'lap', lane: l}); // Stop the timer in worker.
+    }
+
+    function updateTimer(time) {
+        timerEl.innerHTML = time;
+    }
+
+  </script>
+</body>
+</html>

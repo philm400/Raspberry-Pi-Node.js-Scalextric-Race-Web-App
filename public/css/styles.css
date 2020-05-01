@@ -32,22 +32,7 @@ body {
     font-family: "Teko", Helvetica, Arial, sans-serif;
     font-weight: 300;
     /* font-size: 4.583vw; */
-    font-size: calc(24px + (88 - 24) * ((100vw - 800px) / (1920 - 800)));
-    text-align: center;
-}
-.timer .min,
-.timer .sec {
-    width: 3.854vw;
-    padding: 0 0.26vw;
-    padding: 0 calc(0px + (5 - 0) * ((100vw - 800px) / (1920 - 800)));
-    display: inline-block;
-}
-.timer .mil {
-    width: 5.52vw;
-    padding: 0 0.26vw;
-    padding: calc(0px + (5 - 0) * ((100vw - 800px) / (1920 - 800)));
-    display: inline-block;
-    text-align: left;
+    font-size: calc(48px + (140 - 48) * ((100vw - 800px) / (1920 - 800)));
 }
 .row {
 	margin: 0;
