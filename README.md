@@ -18,10 +18,10 @@ I've also upgrade the UI to use modern CSS to create better visuals and interact
 * Breadboard + wires etc...
 * 1KΩ and 10KΩ resistors
 * 2 Reed sensors - Small Sealed / pre-wired ones are best like these: http://ebay.eu/2kwWhZ7
-* Node.js (I'm using 12.x LTS)
-* Express 
-* socket.io for Node.js
-* pigpio library for Node.js
+* [Node.js](https://www.w3schools.com/nodejs/nodejs_raspberrypi.asp) (I'm using 12.x LTS)
+* [Express](https://expressjs.com/) 
+* [socket.io](https://www.npmjs.com/package/socket.io) for Node.js
+* [pigpio](https://www.npmjs.com/package/pigpio) library for Node.js
 * Scalextric Track
 * 2 Slot cars with Magnatraction (magnets on the chasis)
 
@@ -38,7 +38,8 @@ Again from the terminal in the same folder run following command to start Node.j
 ```
 sudo node index2.js
 ```
-*Note: the pigpio module requires you to run Node.js as sudo to enable permission and access to the GPIO*
+>  **Note: the pigpio module requires you to run Node.js as sudo to enable permission and access to the GPIO**
+
 
 From another device i.e. a laptop or desktop machine on the same network, you should be able access the Node.js server using a URL reference such as: 
 
