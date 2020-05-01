@@ -12,12 +12,17 @@
         <div id="ui-wrap" class="hidden">
             <div class="row flex-grid" id="ui-top">
                 <div class="col full">
-                    <h1>Scalextric.JS</h1>
                 </div>
             </div>
             <div class="row flex-grid" id="ui-elem">
-                <div class="col two-fifths lane">
-                    <h2>LANE 1</h2>
+                <div id="lane1" class="col two-fifths lane">
+                    <div class="player-info">
+                        <div class="container">
+                            <h2>1</h2>
+                            <p class="player-name">Isaac M.</p>
+                        </div>
+                        <div class="lap-count">5/<small>10</small></div>
+                    </div>
                     <div class="wrap bkg-blur">
                         <div class="lapsHeader">
                             <span>Lap #</span>
@@ -34,12 +39,19 @@
                         <a href="#" class="btn blue" onClick="raceOptions();"><span>Race Options</span></a>
                         <a href="#" class="btn green" onClick="startRace();"><span>Start</span></a>
                         <a href="#" class="btn red" onClick="stopRace();"><span>Stop</span></a>
-                        <a href="#" class="btn yellow" onClick="lapTime(1);"><span>Lap</span></a>
+                        <a href="#" class="btn yellow" onClick="lapTime(1);"><span>Lap - L1</span></a>
+                        <a href="#" class="btn yellow" onClick="lapTime(2);"><span>Lap - L2</span></a>
                         <a href="#" class="btn grey" onClick="resetRace();"><span>Reset</span></a>
                     </nav>
                 </div>
-                <div class="col two-fifths lane">
-                    <h2>LANE 2</h2>
+                <div id="lane2" class="col two-fifths lane">
+                    <div class="player-info">
+                        <div class="container">
+                            <h2>2</h2>
+                            <p class="player-name">Phil M.</p>
+                        </div>
+                        <div class="lap-count">4/<small>10</small></div>
+                    </div>
                     <div class="wrap bkg-blur">
                         <div class="lapsHeader">
                             <span>Lap #</span>
