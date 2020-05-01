@@ -19,7 +19,8 @@ body {
 	color:#fff;
 }
 #bkg {
-    background: url('/images/base-img.webp') no-repeat center center;
+    background: url('/images/base-img-2.webp') no-repeat center center;
+    background-size: cover;
     position: absolute;
     top:0;
     left: 0;
@@ -33,6 +34,9 @@ body {
     font-weight: 300;
     /* font-size: 4.583vw; */
     font-size: calc(48px + (140 - 48) * ((100vw - 800px) / (1920 - 800)));
+    width: 100%;
+    margin: 2rem 0 0;
+    text-shadow: 0 5px 30px rgba(0,0,0,1)
 }
 .row {
 	margin: 0;
@@ -152,7 +156,7 @@ body {
     border:0;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(15px);
-    font-size: 1.75rem;
+    font-size: 2rem;
     color: #fff;
     font-weight: 500;
     width: 100%;
@@ -213,7 +217,7 @@ body {
     display: flex;
     margin: 0;
     padding: 20px 1.125rem 2px;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 500;
     height: 59px;
 }
@@ -227,7 +231,7 @@ body {
     padding: 7px 0.5rem 5px;
     margin: 0 10px 3px;
     background: rgba(0,0,0,0.2);
-    font-size: 1.75rem;
+    font-size: 2rem;
     font-weight: 300;
     position: relative;
 }
@@ -274,11 +278,6 @@ span.fastestLap {
     flex-direction: row;
     flex-wrap: wrap;
     max-height: 100%;
-}
-
-.timer {
-    width: 100%;
-    margin: 2rem 0 0;
 }
 
 .controls {
