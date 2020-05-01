@@ -36,7 +36,6 @@ body {
     font-size: calc(48px + (140 - 48) * ((100vw - 800px) / (1920 - 800)));
     width: 100%;
     margin: 2rem 0 0;
-    text-shadow: 0 5px 30px rgba(0,0,0,1)
 }
 .row {
 	margin: 0;
@@ -107,8 +106,8 @@ body {
 }
 #logo.in-game {
     transition: all 0.5s ease-out;
-    width: 250px;
-    top: 60px;
+    width: 200px;
+    top: 50px;
 }
 #enter-game-btn {
     z-index: 3;
@@ -121,6 +120,12 @@ body {
     font-size: 3rem;
     opacity: 0;
     visibility: hidden;
+}
+#enter-game-btn::before {
+    width: 30px;
+}
+#enter-game-btn:hover::before {
+    width: 40px;
 }
 #enter-game-btn.on {
     opacity: 1;
@@ -145,7 +150,7 @@ body {
 }
 .bkg-blur {
     background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(10px);
     flex-grow: 1;
 }
 .btn {
@@ -211,8 +216,72 @@ body {
 }
 .lane .wrap {
     max-height:100%;
-    border-radius: 5px;
+    border-radius: 0 0 5px 5px;
 }
+.player-info {
+    position: relative;
+}
+.player-info .container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 20px 30px 16px 20px;
+    backdrop-filter: blur(10px);
+    background: rgba(180, 180, 180, 0.35);
+    width: 100%;
+}
+.player-info .container h2 {
+    position: absolute;
+    top: 0;
+    line-height: 1;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(10px);
+    left: -3.5rem;
+    padding: 20px 10px 16px 10px;
+    font-size: 3rem;
+    width: 3.5rem;
+    text-align: center;
+}
+.player-name {
+    font-weight: 300;
+    font-size: 3rem;
+    line-height: 1;
+    padding:0;
+    margin:0;
+}
+.lap-count {
+    font-size: 3rem;
+    font-weight: 300;
+    position: absolute;
+    line-height: 1;
+    right: 0;
+    bottom: 0;
+    text-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    padding: 20px 20px 16px;
+    backdrop-filter: blur(10px);
+    background: rgba(60, 60, 60, 0.35);
+}
+.lap-count small {
+    font-size: 2rem;
+}
+.lane.first .lap-count {
+    background: rgba(0, 148, 50, 0.9);
+}
+.lane.first .lap-count,
+.lane.first .container h2 {
+    background: rgba(0, 148, 50, 0.9);
+}
+.lane.last .lap-count,
+.lane.last .container h2 {
+    background: rgba(192, 57, 43, 0.9);
+}
+.lane.first .container {
+    background: rgba(0, 148, 50, 0.35);
+}
+.lane.last .container {
+    background: rgba(192, 57, 43, 0.35);
+}
+
 .lapsHeader {
     display: flex;
     margin: 0;
@@ -223,6 +292,7 @@ body {
 }
 .laps {
     overflow-y: auto;
+    overflow-x: visible;
     height: auto;
     max-height: calc(100% - 59px);
 }
@@ -303,7 +373,7 @@ span.fastestLap {
     align-self: center;
     padding: 1.5rem 3rem;
     background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(15px);
+    backdrop-filter: blur(10px);
     visibility: hidden;
 }
 .name-game-panel  h1 {
