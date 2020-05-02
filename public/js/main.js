@@ -14,6 +14,10 @@ var options = {
 const bkg = document.querySelector('#bkg');
 const ui = document.querySelector('#ui-wrap');
 const newg = document.querySelector('#newGame');
+const lightOverlay = document.querySelector('#startingLights');
+const lightPanel = document.querySelector('#startingLights .lights-panel');
+const goPanel = document.querySelector('#startingLights .go-panel');
+const lightSet = document.querySelectorAll('#startingLights .light');
 const newgpanel = document.querySelector('.name-game-panel');
 const lapOption = document.querySelector('#i-num-laps');
 const p1 = document.querySelector('#i-player1');
@@ -109,7 +113,11 @@ function updateTimer(time) {
     timerEl.innerHTML = time;
 }
 function startRace() {
-    worker.postMessage({function: 'start'}); // Start the timer in worker.
+    if (options.lights) {
+        showLights(); // Show the lights
+    } else {
+        worker.postMessage({function: 'start'}); // Start the timer in worker.
+    }
 }
 function endRace(lane) {
     worker.postMessage({function: 'stop'}); // Race has been won, stop and show flag.
@@ -151,19 +159,56 @@ function closeOptions() { // handle button event to show New Game panel
     function handleAnimationEnd() {
         newg.classList.remove('flex');
         newgpanel.classList.remove('UIExit','UIReveal');
-        bkg.classList.add('reverse-blurUI-20');
-        bkg.classList.remove('blurUI-20');
-        ui.classList.add('reverse-opacityUI-clear');
-        ui.classList.remove('opacityUI-clear');
-
-        ui.addEventListener('animationend', handleAnimationEnd2);
-        function handleAnimationEnd2() {
-            bkg.classList.remove('reverse-blurUI-20');
-            ui.classList.remove('reverse-opacityUI-clear');
-            ui.removeEventListener('animationend', handleAnimationEnd2);
-        }
-
+        returnUIBKG();
         newgpanel.removeEventListener('animationend', handleAnimationEnd);
+    }
+}
+function returnUIBKG() {
+    bkg.classList.add('reverse-blurUI-20');
+    bkg.classList.remove('blurUI-20');
+    ui.classList.add('reverse-opacityUI-clear');
+    ui.classList.remove('opacityUI-clear');
+
+    ui.addEventListener('animationend', handleAnimationEnd2);
+    function handleAnimationEnd2() {
+        bkg.classList.remove('reverse-blurUI-20');
+        ui.classList.remove('reverse-opacityUI-clear');
+        ui.removeEventListener('animationend', handleAnimationEnd2);
+    }
+}
+
+function showLights() { // handle button event to show New Game panel
+    bkg.classList.add('blurUI-20');
+    ui.classList.add('opacityUI-clear');
+    bkg.addEventListener('animationend', handleAnimationEnd);
+
+    function handleAnimationEnd() {
+        lightOverlay.classList.add('flex');
+        // Start Lights Here
+        var i=0;
+        var seq = setInterval(() => {
+            lightSet[i].src = "/images/lights-on.webp";
+            console.log('Light - '+i);
+            i++;
+            if (i == 5) {
+                clearInterval(seq);
+                setTimeout(() => {
+                    worker.postMessage({function: 'start'}); // Start the timer in worker.
+                    lightPanel.classList.add('hide');
+                    goPanel.classList.add('show');
+                    for (i = 0; i < lightSet.length; ++i) { // loop reset images for next race
+                        lightSet[i].src = "/images/lights-off.webp";
+                    }
+                    setTimeout(() => { // back to the race, clean up UI and reset for next race
+                        lightOverlay.classList.remove('flex');
+                        goPanel.classList.remove('show');
+                        lightPanel.classList.remove('hide');
+                        returnUIBKG();
+                    }, 1000);
+                }, 2000);
+            }
+        }, 1000);
+        bkg.removeEventListener('animationend', handleAnimationEnd);
     }
 }
 
@@ -225,5 +270,7 @@ function preload() {
 }
 preload(
     "/images/checkered-t@2x.png",
-    "/images/checkered-b@2x.png"
+    "/images/checkered-b@2x.png",
+    "/images/lights-on.webp",
+    "/images/lights-off.webp"
 )

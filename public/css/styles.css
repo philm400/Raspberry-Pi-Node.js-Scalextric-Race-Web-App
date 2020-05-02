@@ -82,6 +82,12 @@ body {
 .hidden {
     visibility: hidden;
 }
+.hide {
+    display: none !important;
+}
+.show {
+    display: block !important;
+}
 .op-25 {
     opacity: 25%;
 }
@@ -483,6 +489,32 @@ span.fastestLap {
 }
 .name-game-panel .btn.grey:hover {
     padding: 8px 30px 8px 48px;
+}
+
+#startingLights {
+    display: none;
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 4;
+    justify-content: center;
+}
+
+.lights-panel,
+.go-panel  {
+    align-self: center;
+}
+.go-panel {
+    display: none;
+}
+.go-panel h1 {
+    font-size: 20rem;
+}
+.lights-panel .light {
+    width: 200px;
+    height: auto;
 }
 
 .switch {
