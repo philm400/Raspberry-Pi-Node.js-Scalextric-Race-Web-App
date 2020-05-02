@@ -1,5 +1,6 @@
 var parser = new DOMParser();
 var options = {
+    running: false,
     laps: 10,
     player1: 'Player 1',
     player2: 'Player 2',
@@ -29,11 +30,15 @@ const lapCountEl = (data) => `${data.count}/<small>${options.laps}</small>`;
 
 window.addEventListener('load', function() {
     console.log('Page Loaded')
-    /* var socket = io(); // Initialise socket.io-client to connect to host
+    var socket = io(); // Initialise socket.io-client to connect to host
     socket.on('lane1', function (data) { //get button status from client
-        //document.querySelecter("#console_lane_1").innerHTML += 'Lane1 - Data: '+data+'<br>';
-        console.log('Lane1 - Data: '+data);
-    }); */
+        console.log('Websocket - Data: '+data);
+        lapTime(1);
+    });
+    socket.on('lane2', function (data) { //get button status from client
+        console.log('Websocket - Data: '+data);
+        lapTime(2);
+    });
     updateTimer(new Date(0).toISOString().slice(14, 21));
      
     logo.addEventListener('animationend', showStart);
@@ -113,18 +118,24 @@ function updateTimer(time) {
     timerEl.innerHTML = time;
 }
 function startRace() {
-    if (options.lights) {
-        showLights(); // Show the lights
-    } else {
-        worker.postMessage({function: 'start'}); // Start the timer in worker.
+    if (!options.running){
+        options.running = true;
+        if (options.lights) {
+            showLights(); // Show the lights
+        } else {
+            worker.postMessage({function: 'start'}); // Start the timer in worker.
+        }
     }
 }
 function endRace(lane) {
     worker.postMessage({function: 'stop'}); // Race has been won, stop and show flag.
+    console.log('WINNER: L'+lane);
     document.querySelector("#lane"+lane).classList.add('winner');
 }
 function stopRace() {
+    options.running = false;
     worker.postMessage({function: 'stop'}); // Stop the timer in worker.
+    resetRace();
 }
 function resetRace() {
     worker.postMessage({function: 'reset'}); // reset the timer in worker.
@@ -132,10 +143,12 @@ function resetRace() {
     resetLapCount();
     lapsLane1.innerHTML = '';
     lapsLane2.innerHTML = '';
+    document.querySelector("#lane1").classList.remove('winner','last','first'); // remove race classes to reset
+    document.querySelector("#lane2").classList.remove('winner','last','first'); // remove race classes to reset
     worker.postMessage({function: 'reset'}); // reset the race.
 }
 function lapTime(l) {
-    worker.postMessage({function: 'lap', lane: l}); // Stop the timer in worker.
+    worker.postMessage({function: 'lap', lane: l}); // grab a lap time from worker.
 }
 
 
@@ -241,6 +254,11 @@ function updatePlayers() {
     document.querySelector('#lane2 .player-name').innerHTML = options.player2;
 }
 function resetLapCount() {
+    options.lapCount = {
+        lane1: 0,
+        lane2: 0
+    };
+    options.fastest = 99999999;
     document.querySelector('#lane1 .lap-count').innerHTML = lapCountEl({count: 0});
     document.querySelector('#lane2 .lap-count').innerHTML = lapCountEl({count: 0});
 }

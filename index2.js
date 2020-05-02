@@ -16,7 +16,13 @@ const lane1 = new Gpio(23, { // GPIO 23 for Lane 1
       pullUpDown: Gpio.PUD_DOWN,
       edge: Gpio.RISING_EDGE
 });
+const lane2 = new Gpio(21, { // GPIO 21 for Lane 2
+      mode: Gpio.INPUT,
+      pullUpDown: Gpio.PUD_DOWN,
+      edge: Gpio.RISING_EDGE
+});
 lane1.glitchFilter(5000); // 5ms stablity time for signal
+lane2.glitchFilter(5000); // 5ms stablity time for signal
 
 // Set up the simple Express Server
 const PORT_NUM = 3000;
@@ -44,6 +50,14 @@ io.sockets.on('connection', function (socket) {// WebSocket Connection
     if (diff > 2000000) { // stop any further interupts for 2 seconds (in microseconds)
       bounce1 = tick; // update the tick reference for the next lap
       socket.broadcast.emit('lane1', 'L1'); // send status to all open clients (broadcast)
+      console.log('level: '+level +'  Tick: '+tick + '  Diff: '+diff);
+    }
+  });
+  lane2.on('interrupt', (level, tick) => {
+    var diff = tick - bounce2
+    if (diff > 2000000) { // stop any further interupts for 2 seconds (in microseconds)
+      bounce2 = tick; // update the tick reference for the next lap
+      socket.broadcast.emit('lane2', 'L2'); // send status to all open clients (broadcast)
       console.log('level: '+level +'  Tick: '+tick + '  Diff: '+diff);
     }
   });

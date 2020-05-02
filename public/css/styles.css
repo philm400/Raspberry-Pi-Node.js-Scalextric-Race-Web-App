@@ -95,7 +95,7 @@ body {
 #logo {
     z-index: 3;
     position: absolute;
-    top:25%;
+    top:35%;
     left:0;
     right:0;
     margin: 0 auto;
@@ -118,7 +118,7 @@ body {
 #enter-game-btn {
     z-index: 3;
     position: absolute;
-    top:45%;
+    top:52%;
     left:0;
     right:0;
     margin: 0 auto;
@@ -290,14 +290,14 @@ body {
 .lane.winner .wrap::before {
     background-image: url(/images/checkered-b@2x.png);
     background-repeat: no-repeat;
-    background-size: 00%;
+    background-size: 250%;
     background-position: left bottom;
     content: '';
     width: 100%;
     height: 100%;
     top: 0;
     left:0;
-    opacity: 0.4;
+    opacity: 0.6;
     position: absolute;
     z-index: -1;
     animation-name: winner;
@@ -459,7 +459,6 @@ span.fastestLap {
 }
 .name-game-panel input:focus {
     background: rgba(0,0,0,0.5);
-    outline: none;
 }
 .name-game-panel input::-webkit-outer-spin-button,
 .name-game-panel input::-webkit-inner-spin-button {
@@ -570,6 +569,11 @@ span.fastestLap {
         line-height: 1;
         top: 12px;
   }
+  input:focus + .slider {
+    outline: -webkit-focus-ring-color auto 5px;
+    outline: -moz-focus-ring-color auto 5px;
+    outline: focus-ring-color auto 5px;
+  }
   input:checked + .slider {
     background-color: #009432;
   }  
@@ -620,13 +624,13 @@ span.fastestLap {
 
 @keyframes winner {
     0% {
-        opacity: 0.4;
+        opacity: 0.6;
     }
     50% {
         opacity: 0;
     }
     100% {
-        opacity: 0.4;
+        opacity: 0.6;
     }
 }
 @keyframes fastest {
