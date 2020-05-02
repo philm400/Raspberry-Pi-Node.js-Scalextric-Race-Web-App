@@ -1,12 +1,13 @@
 var parser = new DOMParser();
 var options = {
     laps: 10,
-    player1: '',
-    player2: '',
+    player1: 'Player 1',
+    player2: 'Player 2',
+    lights: false,
     fastest: 99999999,
-    times: {
-        lane1: [],
-        lane2: []
+    lapCount: {
+        lane1: 0,
+        lane2: 0
     }
 };
 
@@ -17,8 +18,10 @@ const newgpanel = document.querySelector('.name-game-panel');
 const lapOption = document.querySelector('#i-num-laps');
 const p1 = document.querySelector('#i-player1');
 const p2 = document.querySelector('#i-player2');
+const lightSwitch = document.querySelector('#lights-toggle');
 const logo = document.querySelector('#logo');
 const startBtn = document.querySelector('#enter-game-btn');
+const lapCountEl = (data) => `${data.count}/<small>${options.laps}</small>`; 
 
 window.addEventListener('load', function() {
     console.log('Page Loaded')
@@ -52,14 +55,22 @@ worker.onmessage = function(e) {
                                     <span class="lapTime">${diff}</span>
                                     <span class="raceTime">${runtime}</span>
                                     <span class="fastestLap">Fastest Lap</span></div>
-                                </li>`;
+                                </li>`;                   
         diff = new Date(e.data.value).toISOString().slice(17, -1);   
         runtime = new Date(e.data.raceTime).toISOString().slice(14, -1);            
         let li = parser.parseFromString(lapElement(), 'text/html');
         var fastestLap = document.querySelector('.fastest');
         if (e.data.lane == 1) {
+            lapCount = options.lapCount.lane1 += 1; // update lane lap counter
+            document.querySelector('#lane1 .lap-count').innerHTML = lapCountEl({count: lapCount});
+            if (lapCount > options.lapCount.lane2) {
+                var l1 = document.querySelector('#lane1');
+                var l2 = document.querySelector('#lane2');
+                l1.classList.remove('last');
+                l1.classList.add('first');
+                l2.classList.add('last');
+            }
             lapsLane1.prepend(li.body.firstChild);
-            console.log(e.data.value);
             if (e.data.value < options.fastest) { // Handle fastest lap logic
                 options.fastest = e.data.value;
                 if (fastestLap !== null) {
@@ -67,14 +78,29 @@ worker.onmessage = function(e) {
                 }
                 lapsLane1.firstChild.classList.add('fastest');
             }
+            if (lapCount == options.laps) { // check if winner and end race
+                endRace(1);
+            }
         } else if (e.data.lane == 2) {
-            lapsLane2.prepend(li.body.firstChild); 
+            lapCount = options.lapCount.lane2 += 1; // update lane lap counter
+            document.querySelector('#lane2 .lap-count').innerHTML = lapCountEl({count: lapCount});
+            if (lapCount > options.lapCount.lane1) {
+                var l1 = document.querySelector('#lane1');
+                var l2 = document.querySelector('#lane2');
+                l2.classList.remove('last');
+                l2.classList.add('first');
+                l1.classList.add('last');
+            }
+            lapsLane2.prepend(li.body.firstChild);
             if (e.data.value < options.fastest) { // Handle fastest lap logic
                 options.fastest = e.data.value;
                 if (fastestLap !== null) {
                     fastestLap.classList.remove('fastest');
                 }
                 lapsLane2.firstChild.classList.add('fastest');
+            }
+            if (lapCount == options.laps) { // check for winner and end race
+                endRace(2);
             }
         }                 
     }
@@ -85,12 +111,17 @@ function updateTimer(time) {
 function startRace() {
     worker.postMessage({function: 'start'}); // Start the timer in worker.
 }
+function endRace(lane) {
+    worker.postMessage({function: 'stop'}); // Race has been won, stop and show flag.
+    document.querySelector("#lane"+lane).classList.add('winner');
+}
 function stopRace() {
     worker.postMessage({function: 'stop'}); // Stop the timer in worker.
 }
 function resetRace() {
     worker.postMessage({function: 'reset'}); // reset the timer in worker.
     updateTimer(new Date(0).toISOString().slice(14, 21));
+    resetLapCount();
     lapsLane1.innerHTML = '';
     lapsLane2.innerHTML = '';
     worker.postMessage({function: 'reset'}); // reset the race.
@@ -150,12 +181,28 @@ function saveOptions() {
     options.laps = lapOption.value;
     options.player1 = p1.value;
     options.player2 = p2.value;
+    if (lightSwitch.checked) {
+        options.lights = true;
+    } else {
+        options.lights = false;
+    }
+    updatePlayers();
+    resetLapCount();
     console.table(options);
     closeOptions();
 }
+function updatePlayers() {
+    document.querySelector('#lane1 .player-name').innerHTML = options.player1;
+    document.querySelector('#lane2 .player-name').innerHTML = options.player2;
+}
+function resetLapCount() {
+    document.querySelector('#lane1 .lap-count').innerHTML = lapCountEl({count: 0});
+    document.querySelector('#lane2 .lap-count').innerHTML = lapCountEl({count: 0});
+}
 function enterGame() {
+    updatePlayers();
+    resetLapCount();
     startBtn.classList.remove('on');
-
     setTimeout(() => {
         bkg.classList.remove('op-25');
         logo.classList.add('in-game');
@@ -168,3 +215,15 @@ function enterGame() {
         }
     }, 500);
 }
+
+var images = [];
+function preload() {
+    for (var i = 0; i < arguments.length; i++) {
+        images[i] = new Image();
+        images[i].src = preload.arguments[i];
+    }
+}
+preload(
+    "/images/checkered-t@2x.png",
+    "/images/checkered-b@2x.png"
+)

@@ -281,6 +281,26 @@ body {
 .lane.last .container {
     background: rgba(192, 57, 43, 0.35);
 }
+.lane.winner .wrap::before {
+    background-image: url(/images/checkered-b@2x.png);
+    background-repeat: no-repeat;
+    background-size: 00%;
+    background-position: left bottom;
+    content: '';
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left:0;
+    opacity: 0.4;
+    position: absolute;
+    z-index: -1;
+    animation-name: winner;
+    animation-duration: 0.5s;
+    animation-delay: 0.5s;
+    animation-iteration-count: 4;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+}
 
 .lapsHeader {
     display: flex;
@@ -299,7 +319,7 @@ body {
 .laps li {
     display: flex;
     margin: 0 10px 0;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.4);
     font-size: 2rem;
     font-weight: 300;
     height: 0.01px;
@@ -350,7 +370,6 @@ span.fastestLap {
     background: #be2edd;
     top:0;
     left:0;
-    opacity: 0;
     opacity: 0;
     animation-name: fastest;
     animation-duration: 0.5s;
@@ -417,7 +436,8 @@ span.fastestLap {
     display: block;
     font-size: 1.5rem;
 }
-.name-game-panel input {
+.name-game-panel input[type="text"],
+.name-game-panel input[type="number"] {
     text-align: left;
     font-size: 2rem;
     -webkit-appearance: none;
@@ -465,6 +485,66 @@ span.fastestLap {
     padding: 8px 30px 8px 48px;
 }
 
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 92px;
+    height: 48px;
+  }  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.3);
+    transition: .25s;
+  }  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 40px;
+    width: 40px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .25s;
+  }
+    .switch::before {
+        content: 'ON';
+        font-size: 1.5rem;
+        font-weight: 300;
+        position: absolute;
+        z-index: 1;
+        left: 15px;
+        line-height: 1;
+        top: 12px;
+    }
+    .switch::after {
+        content: 'OFF';
+        font-size: 1.5rem;
+        font-weight: 300;
+        position: absolute;
+        z-index: -1;
+        right: 12px;
+        line-height: 1;
+        top: 12px;
+  }
+  input:checked + .slider {
+    background-color: #009432;
+  }  
+  input:checked + .slider:before {
+    transform: translateX(44px);
+  }
+
 .animate {
     display: block;
 }
@@ -506,6 +586,17 @@ span.fastestLap {
     animation-timing-function: ease-out;
 }
 
+@keyframes winner {
+    0% {
+        opacity: 0.4;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.4;
+    }
+}
 @keyframes fastest {
     0% {
         opacity: 1;
