@@ -292,21 +292,36 @@ body {
 }
 .laps {
     overflow-y: auto;
-    overflow-x: visible;
     height: auto;
+    min-height: 80px;
     max-height: calc(100% - 59px);
 }
 .laps li {
     display: flex;
-    padding: 7px 0.5rem 5px;
-    margin: 0 10px 3px;
+    margin: 0 10px 0;
     background: rgba(0,0,0,0.2);
     font-size: 2rem;
     font-weight: 300;
+    height: 0.01px;
+    opacity:0;
+    animation-name: newLap;
+    animation-duration: 0.3s;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
     position: relative;
 }
+.laps li.in {
+    height: 58px;
+    opacity: 1;
+    margin: 0 10px 3px;
+}
+.laps li > div {
+    padding: 7px 0.5rem 5px;
+    display: flex;
+    width: 100%;
+}
 .lapsHeader > span,
-.laps li > span {
+.laps li > div span {
     flex: 1;
 }
 .lapsHeader > span:nth-child(1) {
@@ -316,7 +331,7 @@ body {
 .lapsHeader > span:nth-child(1) {
     padding-left: 0.5rem;
 }
-.laps li > span:nth-child(1) {
+.laps li > div span:nth-child(1) {
     padding-left: 1.5rem;
     max-width: 90px;
 }
@@ -335,10 +350,25 @@ span.fastestLap {
     background: #be2edd;
     top:0;
     left:0;
+    opacity: 0;
+    opacity: 0;
+    animation-name: fastest;
+    animation-duration: 0.5s;
+    animation-delay: 0.5s;
+    animation-iteration-count: 4;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
 }
 .laps li.fastest .fastestLap {
     background: #be2edd;
     visibility: visible;
+    opacity: 0;
+    animation-name: fastest;
+    animation-duration: 0.5s;
+    animation-delay: 0.5s;
+    animation-iteration-count: 4;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
 }
 .central {
     padding: 0 1.25rem;
@@ -476,6 +506,34 @@ span.fastestLap {
     animation-timing-function: ease-out;
 }
 
+@keyframes fastest {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes newLap {
+    0% {
+        opacity: 0;
+        height: 0.01px;
+        margin: 0 10px 0;
+    }
+    50% {
+        opacity: 0;
+        height: 58px;
+        margin: 0 10px 3px;
+    }
+    100% {
+        opacity: 1;
+        height: 58px;
+        margin: 0 10px 3px;
+    }
+}
 @keyframes opacityUI-clear {
     0% {
       opacity: 1;

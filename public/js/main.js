@@ -2,7 +2,12 @@ var parser = new DOMParser();
 var options = {
     laps: 10,
     player1: '',
-    player2: ''
+    player2: '',
+    fastest: 99999999,
+    times: {
+        lane1: [],
+        lane2: []
+    }
 };
 
 const bkg = document.querySelector('#bkg');
@@ -42,21 +47,35 @@ worker.onmessage = function(e) {
         updateTimer(new Date(e.data.value).toISOString().slice(14, 21));
     }
     if(e.data.function == 'lap') { // data.function, data.value, data.raceTime, data.lane, data.num
-        console.table(e.data);
-        var lapElement = () => `<li class="lap">
+        var lapElement = () => `<li class="lap"><div>
                                     <span class="lapNum">${e.data.num}</span>
                                     <span class="lapTime">${diff}</span>
                                     <span class="raceTime">${runtime}</span>
-                                    <span class="fastestLap">Fastest Lap</span>
+                                    <span class="fastestLap">Fastest Lap</span></div>
                                 </li>`;
         diff = new Date(e.data.value).toISOString().slice(17, -1);   
         runtime = new Date(e.data.raceTime).toISOString().slice(14, -1);            
         let li = parser.parseFromString(lapElement(), 'text/html');
+        var fastestLap = document.querySelector('.fastest');
         if (e.data.lane == 1) {
-            lapsLane1.prepend(li.body.firstChild); 
-
+            lapsLane1.prepend(li.body.firstChild);
+            console.log(e.data.value);
+            if (e.data.value < options.fastest) { // Handle fastest lap logic
+                options.fastest = e.data.value;
+                if (fastestLap !== null) {
+                    fastestLap.classList.remove('fastest');
+                }
+                lapsLane1.firstChild.classList.add('fastest');
+            }
         } else if (e.data.lane == 2) {
             lapsLane2.prepend(li.body.firstChild); 
+            if (e.data.value < options.fastest) { // Handle fastest lap logic
+                options.fastest = e.data.value;
+                if (fastestLap !== null) {
+                    fastestLap.classList.remove('fastest');
+                }
+                lapsLane2.firstChild.classList.add('fastest');
+            }
         }                 
     }
 }
@@ -117,6 +136,7 @@ function closeOptions() { // handle button event to show New Game panel
     }
 }
 
+/* OPTIONS FUNCTIONS */
 function addLap() {
     var laps = parseInt(lapOption.value) + 1;
     lapOption.value = laps;
