@@ -1,14 +1,15 @@
 var parser = new DOMParser();
+var socket;
 var options = {
     running: false,
     laps: 10,
     player1: 'Player 1',
     player2: 'Player 2',
-    lights: false,
+    lights: true,
     fastest: 99999999,
     lapCount: {
-        lane1: 0,
-        lane2: 0
+        lane1: { count: 0, pb: 99999999},
+        lane2: { count: 0, pb: 99999999}
     }
 };
 
@@ -23,6 +24,8 @@ const newgpanel = document.querySelector('.name-game-panel');
 const lapOption = document.querySelector('#i-num-laps');
 const p1 = document.querySelector('#i-player1');
 const p2 = document.querySelector('#i-player2');
+const l1 = document.querySelector('#lane1');
+const l2 = document.querySelector('#lane2');
 const lightSwitch = document.querySelector('#lights-toggle');
 const logo = document.querySelector('#logo');
 const startBtn = document.querySelector('#enter-game-btn');
@@ -30,14 +33,10 @@ const lapCountEl = (data) => `${data.count}/<small>${options.laps}</small>`;
 
 window.addEventListener('load', function() {
     console.log('Page Loaded')
-    var socket = io(); // Initialise socket.io-client to connect to host
-    socket.on('lane1', function (data) { //get button status from client
-        console.log('Websocket - Data: '+data);
-        lapTime(1);
-    });
-    socket.on('lane2', function (data) { //get button status from client
-        console.log('Websocket - Data: '+data);
-        lapTime(2);
+    socket = io(); // Initialise socket.io-client to connect to host
+    socket.on('lap', function (data) {
+        console.log(data);
+        lapTime(data);
     });
     updateTimer(new Date(0).toISOString().slice(14, 21));
      
@@ -54,64 +53,49 @@ const lapsLane2 = document.querySelector("#console_lane_2");
 var parser = new DOMParser();
 var worker = new Worker('/js/timer-worker.js'); // Threaded JS Worker
 
+function lapTime(data) {
+    console.log('Log Lap: '+data)
+    var lapElement = () => `<li class="lap"><div>
+                                <span class="lapNum">${data.lapCount}</span>
+                                <span class="lapTime">${diff}</span>
+                                <span class="raceTime">${runtime}</span>
+                                <span class="fastestLap"></span></div>
+                            </li>`;                   
+    diff = new Date(data.lapTime).toISOString().slice(17, -1);   
+    runtime = new Date(data.raceTime).toISOString().slice(14, -1);            
+    let li = parser.parseFromString(lapElement(), 'text/html');
+    if (data.lane == 1) {
+        var lapCount = options.lapCount.lane1.count += 1; // update lane lap counter
+        document.querySelector('#lane1 .lap-count').innerHTML = lapCountEl({count: lapCount});
+        if (lapCount > options.lapCount.lane2.count) {
+            l1.classList.remove('last');
+            l1.classList.add('first');
+            l2.classList.add('last');
+        }
+        lapsLane1.prepend(li.body.firstChild);
+        updateFastestLap(1,data.lapTime)
+        if (lapCount == options.laps) { // check if winner and end race
+            endRace(1);
+        }
+    } else if (data.lane == 2) {
+        var lapCount = options.lapCount.lane2.count += 1; // update lane lap counter
+        document.querySelector('#lane2 .lap-count').innerHTML = lapCountEl({count: lapCount});
+        if (lapCount > options.lapCount.lane1.count) {
+            l2.classList.remove('last');
+            l2.classList.add('first');
+            l1.classList.add('last');
+        }
+        lapsLane2.prepend(li.body.firstChild);
+        updateFastestLap(2,data.lapTime)
+        if (lapCount == options.laps) { // check for winner and end race
+            endRace(2);
+        }
+    }                 
+}
+
 worker.onmessage = function(e) {
     if(e.data.function == 'timer') {
         updateTimer(new Date(e.data.value).toISOString().slice(14, 21));
-    }
-    if(e.data.function == 'lap') { // data.function, data.value, data.raceTime, data.lane, data.num
-        var lapElement = () => `<li class="lap"><div>
-                                    <span class="lapNum">${e.data.num}</span>
-                                    <span class="lapTime">${diff}</span>
-                                    <span class="raceTime">${runtime}</span>
-                                    <span class="fastestLap">Fastest Lap</span></div>
-                                </li>`;                   
-        diff = new Date(e.data.value).toISOString().slice(17, -1);   
-        runtime = new Date(e.data.raceTime).toISOString().slice(14, -1);            
-        let li = parser.parseFromString(lapElement(), 'text/html');
-        var fastestLap = document.querySelector('.fastest');
-        if (e.data.lane == 1) {
-            lapCount = options.lapCount.lane1 += 1; // update lane lap counter
-            document.querySelector('#lane1 .lap-count').innerHTML = lapCountEl({count: lapCount});
-            if (lapCount > options.lapCount.lane2) {
-                var l1 = document.querySelector('#lane1');
-                var l2 = document.querySelector('#lane2');
-                l1.classList.remove('last');
-                l1.classList.add('first');
-                l2.classList.add('last');
-            }
-            lapsLane1.prepend(li.body.firstChild);
-            if (e.data.value < options.fastest) { // Handle fastest lap logic
-                options.fastest = e.data.value;
-                if (fastestLap !== null) {
-                    fastestLap.classList.remove('fastest');
-                }
-                lapsLane1.firstChild.classList.add('fastest');
-            }
-            if (lapCount == options.laps) { // check if winner and end race
-                endRace(1);
-            }
-        } else if (e.data.lane == 2) {
-            lapCount = options.lapCount.lane2 += 1; // update lane lap counter
-            document.querySelector('#lane2 .lap-count').innerHTML = lapCountEl({count: lapCount});
-            if (lapCount > options.lapCount.lane1) {
-                var l1 = document.querySelector('#lane1');
-                var l2 = document.querySelector('#lane2');
-                l2.classList.remove('last');
-                l2.classList.add('first');
-                l1.classList.add('last');
-            }
-            lapsLane2.prepend(li.body.firstChild);
-            if (e.data.value < options.fastest) { // Handle fastest lap logic
-                options.fastest = e.data.value;
-                if (fastestLap !== null) {
-                    fastestLap.classList.remove('fastest');
-                }
-                lapsLane2.firstChild.classList.add('fastest');
-            }
-            if (lapCount == options.laps) { // check for winner and end race
-                endRace(2);
-            }
-        }                 
     }
 }
 function updateTimer(time) {
@@ -123,17 +107,23 @@ function startRace() {
         if (options.lights) {
             showLights(); // Show the lights
         } else {
+            socket.emit('clientFN', {fn:'start'}); // trigger the server side clock
             worker.postMessage({function: 'start'}); // Start the timer in worker.
         }
     }
 }
+function devLap(lane) {
+    socket.emit('clientFN', {fn:'lap', lane:lane}); // trigger the server side clock
+}
 function endRace(lane) {
+    socket.emit('clientFN', {fn:'stop'}); // trigger the server side clock
     worker.postMessage({function: 'stop'}); // Race has been won, stop and show flag.
     console.log('WINNER: L'+lane);
     document.querySelector("#lane"+lane).classList.add('winner');
 }
 function stopRace() {
     options.running = false;
+    socket.emit('clientFN', {fn:'stop'}); // trigger the server side clock
     worker.postMessage({function: 'stop'}); // Stop the timer in worker.
     resetRace();
 }
@@ -147,13 +137,39 @@ function resetRace() {
     document.querySelector("#lane2").classList.remove('winner','last','first'); // remove race classes to reset
     worker.postMessage({function: 'reset'}); // reset the race.
 }
-function lapTime(l) {
-    worker.postMessage({function: 'lap', lane: l}); // grab a lap time from worker.
+function updateFastestLap(lane, data) {
+    if (lane == 1) {  // Handle personal best lap logic
+        if (data < options.lapCount.lane1.pb) {
+            options.lapCount.lane1.pb = data
+            pbel = l1.querySelector('.pb') !== null
+                if (pbel) { l1.querySelector('.pb').classList.remove('pb'); }
+            lapsLane1.firstChild.classList.add('pb');
+        }
+    }
+    if (lane == 2) {  // Handle personal best lap logic
+        if (data < options.lapCount.lane2.pb) {
+            options.lapCount.lane2.pb = data
+            pbel = l2.querySelector('.pb') !== null
+                if (pbel) { l2.querySelector('.pb').classList.remove('pb'); }
+            lapsLane2.firstChild.classList.add('pb');
+        }
+    }
+    var fastestLap = document.querySelector('.fastest');
+    if (data < options.fastest) { // Handle fastest lap logic
+        options.fastest = data;
+        if (fastestLap !== null) {
+            fastestLap.classList.remove('fastest');
+        }
+        if (lane == 1) {
+            lapsLane1.firstChild.classList.add('fastest');
+        } else {
+            lapsLane2.firstChild.classList.add('fastest');
+        }
+    }
 }
 
 
-
-/* Functions below are UI interaction related  */
+/* Functions below are UI interaction/Animation related  */
 
 function raceOptions() { // handle button event to show New Game panel
     bkg.classList.add('blurUI-20');
@@ -201,11 +217,11 @@ function showLights() { // handle button event to show New Game panel
         var i=0;
         var seq = setInterval(() => {
             lightSet[i].src = "/images/lights-on.webp";
-            console.log('Light - '+i);
             i++;
             if (i == 5) {
                 clearInterval(seq);
                 setTimeout(() => {
+                    socket.emit('clientFN', {fn:'start'}); // trigger the server side clock
                     worker.postMessage({function: 'start'}); // Start the timer in worker.
                     lightPanel.classList.add('hide');
                     goPanel.classList.add('show');
@@ -255,8 +271,8 @@ function updatePlayers() {
 }
 function resetLapCount() {
     options.lapCount = {
-        lane1: 0,
-        lane2: 0
+        lane1: { count: 0, pb: 99999999},
+        lane2: { count: 0, pb: 99999999}
     };
     options.fastest = 99999999;
     document.querySelector('#lane1 .lap-count').innerHTML = lapCountEl({count: 0});

@@ -40,8 +40,8 @@
                         <a href="#" class="btn green" onClick="startRace();"><span>Start</span></a>
                         <a href="#" class="btn red" onClick="stopRace();"><span>Stop &amp; Reset</span></a>
                         <!-- <a href="#" class="btn red" onClick="stopRace();"><span>Stop</span></a> -->
-                        <a href="#" class="btn yellow" onClick="lapTime(1);"><span>Lap - L1</span></a>
-                        <a href="#" class="btn yellow" onClick="lapTime(2);"><span>Lap - L2</span></a>
+                        <a href="#" class="btn yellow" onClick="devLap(1);"><span>Lap - L1</span></a>
+                        <a href="#" class="btn yellow" onClick="devLap(2);"><span>Lap - L2</span></a>
                     </nav>
                 </div>
                 <div id="lane2" class="col two-fifths lane">
@@ -75,7 +75,7 @@
                     <div class="form-row">
                         <label for="i-num-lights">Starting Lights</label>
                         <label class="switch">
-                            <input type="checkbox" id="lights-toggle">
+                            <input type="checkbox" id="lights-toggle" checked>
                             <span class="slider"></span>
                         </label>
                     </div>

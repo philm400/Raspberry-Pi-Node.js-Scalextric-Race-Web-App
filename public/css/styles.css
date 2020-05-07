@@ -331,7 +331,7 @@ body {
     height: 0.01px;
     opacity:0;
     animation-name: newLap;
-    animation-duration: 0.3s;
+    animation-duration: 0.5s;
     animation-fill-mode: forwards;
     animation-timing-function: ease-out;
     position: relative;
@@ -368,6 +368,7 @@ span.fastestLap {
     justify-content: center;
     font-size: 1.5rem;
 }
+.laps li.pb::after,
 .laps li.fastest::after {
     position: absolute;
     content: " ";
@@ -384,6 +385,13 @@ span.fastestLap {
     animation-fill-mode: forwards;
     animation-timing-function: ease-out;
 }
+.laps li.pb::after {
+    background: #22a6b3;
+}
+.laps li.fastest::after {
+    background: #be2edd;
+}
+.laps li.pb .fastestLap,
 .laps li.fastest .fastestLap {
     background: #be2edd;
     visibility: visible;
@@ -394,6 +402,18 @@ span.fastestLap {
     animation-iteration-count: 4;
     animation-fill-mode: forwards;
     animation-timing-function: ease-out;
+}
+.laps li.pb .fastestLap {
+    background: #22a6b3;
+}
+.laps li.fastest .fastestLap {
+    background: #be2edd;
+}
+.laps li.pb .fastestLap::after {
+    content: 'Personal Best'
+}
+.laps li.fastest .fastestLap::after {
+    content: 'Fastest Lap'
 }
 .central {
     padding: 0 1.25rem;
@@ -650,12 +670,24 @@ span.fastestLap {
         height: 0.01px;
         margin: 0 10px 0;
     }
-    50% {
+    33% {
         opacity: 0;
         height: 58px;
         margin: 0 10px 3px;
     }
-    100% {
+    66% {
+        opacity: 1;
+        height: 58px;
+        margin: 0 10px 3px;
+    }
+    83% {
+        background: rgba(255,255,255,1);
+        opacity: 1;
+        height: 58px;
+        margin: 0 10px 3px;
+    }
+    100% {        
+        background: rgba(0,0,0,0.4);
         opacity: 1;
         height: 58px;
         margin: 0 10px 3px;
