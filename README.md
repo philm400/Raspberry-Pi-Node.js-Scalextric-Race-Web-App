@@ -36,7 +36,7 @@ This will install of the dependancies required.
 ## Running the application
 Again from the terminal in the same folder run following command to start Node.js and start serving the application on port 3000.
 ```
-sudo node index2.js
+sudo node index.js
 ```
 >  **Note: the pigpio module requires you to run Node.js as sudo to enable permission and access to the GPIO**
 
