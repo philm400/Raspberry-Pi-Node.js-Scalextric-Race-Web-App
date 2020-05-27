@@ -1,4 +1,7 @@
 # Raspberry Pi Node.js Scalextric Race Engine
+
+![RMS Screen shot](https://github.com/philm400/Raspberry-Pi-Node.js-Scalextric-Race-Web-App/blob/master/private/screens/demo-screen-03.jpg?raw=true)
+
 This a software/hardware project to build a custom Scalextric race engine accessible via a modern browser for display on screen capable of 1080p output.
 
 Mobile and tablet device support will be added in future releases.
