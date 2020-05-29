@@ -1,0 +1,11 @@
+{
+	"vehicle": "car",
+	"details": {
+		"brand": "Scalextric",
+		"code": "C3604",
+		"model": "McLaren MP4-12C Super GT",
+		"type": "analogue",
+		"racenumber": 21,
+		"color": "black"
+	}
+}
