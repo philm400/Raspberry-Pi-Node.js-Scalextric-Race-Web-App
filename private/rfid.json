@@ -1,6 +1,7 @@
 {
-	"vehicle": "car",
-	"details": {
+	"type": "car",
+	"id": "b3cbc894",
+	"info": {
 		"brand": "Scalextric",
 		"code": "C3604",
 		"model": "McLaren MP4-12C Super GT",
